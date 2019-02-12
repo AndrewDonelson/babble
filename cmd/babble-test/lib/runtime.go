@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -14,32 +13,28 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"syscall"
-	"time"
 
 	"github.com/mosaicnetworks/babble/src/babble"
-	bproxy "github.com/mosaicnetworks/babble/src/proxy/socket/babble"
-	"github.com/sirupsen/logrus"
 )
 
 type Node struct {
 	i     int
-	proc  *os.Process
-	proxy *bproxy.SocketBabbleProxy
+	proc  *babble.Babble
+	proxy *InmemSocketProxy
 }
 
 type Runtime struct {
+	sync.Mutex
 	config     babble.BabbleConfig
 	nbNodes    int
 	sendTx     int
 	nextNodeId int
-	// processes  map[int]*os.Process
-	processes map[int]*Node
-	dieChan   chan int
+	processes  map[int]*Node
+	dieChan    chan int
 }
 
 func New(babbleConfig babble.BabbleConfig, nbNodes int, sendTx int) *Runtime {
-	return &Runtime{
+	r := &Runtime{
 		config:     babbleConfig,
 		sendTx:     sendTx,
 		nextNodeId: 0,
@@ -47,6 +42,10 @@ func New(babbleConfig babble.BabbleConfig, nbNodes int, sendTx int) *Runtime {
 		processes:  make(map[int]*Node),
 		dieChan:    make(chan int),
 	}
+
+	go r.StartServer()
+
+	return r
 }
 
 func (r *Runtime) buildConfig() error {
@@ -115,18 +114,8 @@ func (r *Runtime) buildConfig() error {
 	return nil
 }
 
-func (r *Runtime) sendTxs(i int) {
-	nb := strconv.Itoa(i)
-
-	network := exec.Command("network", "proxy", "--node="+nb, "--submit="+nb)
-
-	err := network.Run()
-
-	if err != nil {
-		fmt.Println("Error: ", err)
-	} else {
-		fmt.Println("Ok")
-	}
+func (r *Runtime) sendTxs(i int, tx []byte) {
+	r.processes[i].proxy.SubmitTx(tx)
 }
 
 func (r *Runtime) RunBabbles() error {
@@ -152,38 +141,13 @@ func (r *Runtime) RunBabbles() error {
 			nb := strconv.Itoa(i)
 
 			babblePortStr := strconv.Itoa(babblePort + (i * 10))
-			proxyServPortStr := strconv.Itoa(babblePort + (i * 10) + 1)
-			proxyCliPortStr := strconv.Itoa(babblePort + (i * 10) + 2)
-
 			servicePort := strconv.Itoa(servicePort + i)
 
-			// defer wg.Done()
+			config := babble.NewDefaultConfig()
 
-			read, write, err := os.Pipe()
-
-			defer write.Close()
-
-			if err != nil {
-				fmt.Println("Cannot create pipe", err)
-
-				return
-			}
-
-			var babbleNode *exec.Cmd
-
-			// if r.nextNodeId == 0 {
-			// 	babbleNode = exec.Command("babble", "run", "-l=127.0.0.1:"+babblePortStr, "--datadir=/tmp/babble_configs/.babble"+nb, "--proxy-listen=127.0.0.1:"+proxyServPortStr, "--client-connect=127.0.0.1:"+proxyCliPortStr, "-s=127.0.0.1:"+servicePort, "--heartbeat="+r.config.NodeConfig.HeartbeatTimeout.String())
-			// } else {
-			// 	babbleNode = exec.Command("babble", "run", "-l=127.0.0.1:"+babblePortStr, "--datadir=/tmp/babble_configs/.babble"+nb, "--proxy-listen=127.0.0.1:"+proxyServPortStr, "--client-connect=127.0.0.1:"+proxyCliPortStr, "-s=127.0.0.1:"+servicePort, "--heartbeat="+r.config.NodeConfig.HeartbeatTimeout.String(), "-c=127.0.0.1:1337")
-			// }
-			babbleNode = exec.Command("babble", "run", "-l=127.0.0.1:"+babblePortStr, "--datadir=/tmp/babble_configs/.babble"+nb, "--proxy-listen=127.0.0.1:"+proxyServPortStr, "--client-connect=127.0.0.1:"+proxyCliPortStr, "-s=127.0.0.1:"+servicePort, "--heartbeat="+r.config.NodeConfig.HeartbeatTimeout.String())
-
-			babbleNode.Stdout = write
-			babbleNode.Stderr = write
-
-			babbleNode.SysProcAttr = &syscall.SysProcAttr{
-				Setpgid: true,
-			}
+			config.DataDir = "/tmp/babble_configs/.babble" + nb
+			config.BindAddr = "127.0.0.1:" + babblePortStr
+			config.ServiceAddr = "127.0.0.1:" + servicePort
 
 			out, err := os.OpenFile("/tmp/babble_configs/.babble"+nb+"/out.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 
@@ -193,43 +157,38 @@ func (r *Runtime) RunBabbles() error {
 				return
 			}
 
-			go func() {
-				defer read.Close()
-				defer out.Close()
+			config.Logger.SetOutput(out)
 
-				// copy the data written to the PipeReader via the cmd to stdout
-				if _, err := io.Copy(out, read); err != nil {
-					log.Fatal(err)
-				}
-			}()
+			proxy := NewInmemSocketProxy(config.Logger)
 
-			err = babbleNode.Start()
+			config.Proxy = proxy
 
-			if err != nil {
-				log.Fatal(err)
+			engine := babble.NewBabble(config)
+
+			if err := engine.Init(); err != nil {
+				config.Logger.Error("Cannot initialize engine:", err)
 			}
 
 			fmt.Println("Running", i)
 
 			wg.Done()
 
-			if r.sendTx > 0 {
-				go r.sendTxs(i)
-			}
-
-			proxy, err := r.ConnectProxy(i)
-
+			r.Lock()
 			r.processes[i] = &Node{
 				i:     i,
-				proc:  babbleNode.Process,
+				proc:  engine,
 				proxy: proxy,
 			}
+			r.Unlock()
 
-			babbleNode.Wait()
+			// manage errors
+			engine.Run()
 
 			fmt.Println("Terminated", i)
 
+			r.Lock()
 			delete(r.processes, i)
+			r.Unlock()
 
 			r.dieChan <- i
 		}(i)
@@ -239,37 +198,24 @@ func (r *Runtime) RunBabbles() error {
 
 	r.nextNodeId += r.nbNodes
 
-	return r.StartServer()
-}
-
-func (r *Runtime) ConnectProxy(i int) (*bproxy.SocketBabbleProxy, error) {
-	babblePort := 1337 + (i * 10)
-	proxyServPortStr := strconv.Itoa(babblePort + 1)
-	proxyCliPortStr := strconv.Itoa(babblePort + 2)
-
-	logger := logrus.New()
-
-	logger.Level = logrus.InfoLevel
-
-	proxy, err := bproxy.NewSocketBabbleProxy("127.0.0.1:"+proxyServPortStr, "127.0.0.1:"+proxyCliPortStr, NewHandler(), 1*time.Second, logger)
-	if err != nil {
-		panic(err)
-	}
-
-	return proxy, nil
+	return nil
 }
 
 func (r *Runtime) Kill(n int) error {
 	if n < 0 {
 		for _, node := range r.processes {
-			node.proc.Kill()
+			node.proc.Stop()
 
+			r.Lock()
 			r.processes = map[int]*Node{}
+			r.Unlock()
 		}
 	} else if node, ok := r.processes[n]; ok {
-		node.proc.Kill()
+		node.proc.Stop()
 
+		r.Lock()
 		delete(r.processes, n)
+		r.Unlock()
 	} else {
 		fmt.Println("Unknown process")
 	}
@@ -309,11 +255,14 @@ func (r *Runtime) Start() error {
 		case "proxy":
 			node := 0
 
-			if len(splited) >= 2 {
+			if len(splited) >= 3 {
 				node, _ = strconv.Atoi(splited[1])
-			}
+				tx = splited[2]
 
-			r.sendTxs(node)
+				r.sendTxs(node, []byte(tx))
+			} else {
+				fmt.Println("Usage: proxy NodeId Message")
+			}
 
 		case "r":
 			fallthrough
@@ -391,6 +340,8 @@ func (r *Runtime) Wait() error {
 }
 
 func (r *Runtime) StartServer() error {
+	gob.Register(Packet{})
+
 	l, err := net.Listen("tcp", "localhost:9000")
 
 	if err != nil {
@@ -422,25 +373,49 @@ type Packet struct {
 func (r *Runtime) handleRequest(conn net.Conn) {
 	buf := make([]byte, 1024)
 
-	reqLen, err := conn.Read(buf)
+	id := -1
 
-	if err != nil || reqLen == 0 {
-		fmt.Println("Error reading:", err.Error())
+	for {
+		reqLen, err := conn.Read(buf)
+
+		if err != nil || reqLen == 0 {
+			break
+		}
+
+		res := bytes.NewBuffer(buf)
+
+		dec := gob.NewDecoder(res)
+
+		var msg Packet
+
+		if err := dec.Decode(&msg); err != nil {
+			fmt.Println("Error Decoding:", err.Error())
+
+			break
+		}
+
+		// check id exists among nodes
+
+		if _, ok := r.processes[msg.NodeId]; !ok {
+			break
+		}
+
+		if id == -1 {
+			id = msg.NodeId
+
+			go func() {
+				out := r.processes[id].proxy.GetOutChan()
+
+				for tx := range out {
+					conn.Write(tx)
+				}
+			}()
+		}
+
+		if len(msg.Message) > 0 {
+			r.processes[msg.NodeId].proxy.SubmitTx(msg.Message)
+		}
 	}
-
-	res := bytes.NewBuffer(buf)
-
-	dec := gob.NewDecoder(res)
-
-	var msg Packet
-
-	if err := dec.Decode(&msg); err != nil {
-		fmt.Println("Error reading:", err.Error())
-	}
-
-	// r.processes[msg.NodeId].proxy.com <- msg.Message
-
-	fmt.Println("Got", msg.Message)
 
 	conn.Close()
 }
@@ -456,12 +431,12 @@ func ReadLog(nb string) {
 
 func help() {
 	fmt.Println("Commands:")
-	fmt.Println("  r | run [nb=4]     - Run `nb` babble nodes")
-	fmt.Println("  p | proxy [node=0] - Send a transaction to a node")
-	fmt.Println("  l | log [node=0]   - Show logs for a node")
-	fmt.Println("  h | help           - This help")
-	fmt.Println("  k | kill [node=0]  - Kill given node")
-	fmt.Println("      killall        - Kill all nodes")
-	fmt.Println("      list           - List all running nodes")
-	fmt.Println("  q | quit           - Quit")
+	fmt.Println("  r | run [nb=4]       - Run `nb` babble nodes")
+	fmt.Println("  p | proxy [node=0]   - Send a transaction to a node")
+	fmt.Println("  l | log node message - Show logs for a node")
+	fmt.Println("  h | help             - This help")
+	fmt.Println("  k | kill [node=0]    - Kill given node")
+	fmt.Println("      killall          - Kill all nodes")
+	fmt.Println("      list             - List all running nodes")
+	fmt.Println("  q | quit             - Quit")
 }

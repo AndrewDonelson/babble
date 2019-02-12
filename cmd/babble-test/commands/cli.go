@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//NewCliCmd starts a prompt to interact with running nodes
+//NewCliCmd run a prompt to start nodes and interact with them
 func NewCliCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "cli",
@@ -42,5 +42,4 @@ func AddCliFlags(cmd *cobra.Command) {
 	cmd.Flags().Duration("heartbeat", config.Babble.NodeConfig.HeartbeatTimeout, "Time between gossips")
 
 	cmd.Flags().Int("sync-limit", config.Babble.NodeConfig.SyncLimit, "Max number of events for sync")
-	cmd.Flags().Int("send-txs", config.SendTxs, "Send some random transactions")
 }

@@ -30,13 +30,15 @@ func NewService(bindAddress string, n *node.Node, logger *logrus.Logger) *Servic
 func (s *Service) Serve() {
 	s.logger.WithField("bind_address", s.bindAddress).Debug("Service serving")
 
-	http.HandleFunc("/stats", s.GetStats)
+	mux := http.NewServeMux()
 
-	http.HandleFunc("/block/", s.GetBlock)
+	mux.Handle("/stats", http.HandlerFunc(s.GetStats))
 
-	http.HandleFunc("/graph", s.GetGraph)
+	mux.Handle("/block/", http.HandlerFunc(s.GetBlock))
 
-	http.HandleFunc("/peers", s.GetPeers)
+	mux.Handle("/graph", http.HandlerFunc(s.GetGraph))
+
+	mux.Handle("/peers", http.HandlerFunc(s.GetPeers))
 
 	err := http.ListenAndServe(s.bindAddress, nil)
 

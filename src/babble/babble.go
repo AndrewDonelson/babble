@@ -198,6 +198,10 @@ func (b *Babble) Run() {
 	b.Node.Run(true)
 }
 
+func (b *Babble) Stop() {
+	b.Node.Shutdown()
+}
+
 func Keygen(datadir string) (*ecdsa.PrivateKey, error) {
 	pemKey := crypto.NewPemKey(datadir)
 

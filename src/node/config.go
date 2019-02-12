@@ -36,7 +36,7 @@ func DefaultConfig() *Config {
 	logger.Level = logrus.DebugLevel
 
 	return &Config{
-		HeartbeatTimeout: 10 * time.Millisecond,
+		HeartbeatTimeout: 100 * time.Millisecond,
 		TCPTimeout:       1000 * time.Millisecond,
 		CacheSize:        5000,
 		SyncLimit:        1000,
