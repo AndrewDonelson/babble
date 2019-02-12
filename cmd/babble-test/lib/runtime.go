@@ -132,7 +132,7 @@ func (r *Runtime) RunBabbles() error {
 
 	wg := sync.WaitGroup{}
 
-	// if existing network, join without creating peers.json
+	//TODO: if existing network, join without creating peers.json
 
 	for i := r.nextNodeId; i < r.nbNodes+r.nextNodeId; i++ {
 		wg.Add(1)
@@ -393,8 +393,6 @@ func (r *Runtime) handleRequest(conn net.Conn) {
 
 			break
 		}
-
-		// check id exists among nodes
 
 		if _, ok := r.processes[msg.NodeId]; !ok {
 			break

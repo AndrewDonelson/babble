@@ -17,10 +17,6 @@ func NewRunCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			run := runtime.New(config.Babble, config.NbNodes, config.SendTxs)
 
-			// signalChan := make(chan os.Signal, 1)
-
-			// signal.Notify(signalChan, os.Interrupt)
-
 			if err := run.RunBabbles(); err != nil {
 				return nil
 			}

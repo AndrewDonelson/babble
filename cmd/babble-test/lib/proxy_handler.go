@@ -30,8 +30,6 @@ func (h *Handler) CommitHandler(block hashgraph.Block) (proxy.CommitResponse, er
 	for _, tx := range block.Transactions() {
 		hash = crypto.SimpleHashFromTwoHashes(hash, crypto.SHA256(tx))
 
-		// fmt.Println(string(tx))
-
 		h.out <- tx
 	}
 
@@ -78,7 +76,6 @@ func NewInmemSocketProxy(logger *logrus.Logger) *InmemSocketProxy {
 		handler:    handler,
 		in:         in,
 		out:        out,
-		// logger:     logger,
 	}
 
 	return client
