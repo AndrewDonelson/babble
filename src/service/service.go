@@ -40,7 +40,7 @@ func (s *Service) Serve() {
 
 	mux.Handle("/peers", http.HandlerFunc(s.GetPeers))
 
-	err := http.ListenAndServe(s.bindAddress, nil)
+	err := http.ListenAndServe(s.bindAddress, mux)
 
 	if err != nil {
 		s.logger.WithField("error", err).Error("Service failed")
