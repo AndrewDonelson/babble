@@ -1,13 +1,24 @@
 version: 2
 jobs:
   build:
-    working_directory: /go/src/github.com/mosaicnetworks/babble
-    docker:
-      - image: mosaicnetworks/glider:0.0.1
+    machine: true
+    working_directory: /home/circleci/go/src/github.com/mosaicnetworks/babble
+    environment:
+      GOPATH: /home/circleci/go
+      GOBIN: /home/circleci/go/bin
     steps:
       - checkout
       - restore_cache:
           key: v0-glide-cache-{{ checksum "glide.yaml" }}
+      - run: 
+          name: Set PATH
+          command: echo 'export PATH=$PATH:/home/circleci/go/bin' >> $BASH_ENV
+      - run:
+          name: Create /home/circleci/go/bin
+          command: mkdir -p /home/circleci/go/bin
+      - run:
+          name: Install Glide
+          command: curl https://glide.sh/get | sh
       - run:
           name: Install Go dependencies
           command: glide install
