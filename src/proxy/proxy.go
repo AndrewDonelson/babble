@@ -1,7 +1,7 @@
 package proxy
 
 import (
-	"github.com/mosaicnetworks/babble/src/hashgraph"
+	"github.com/AndrewDonelson/babble/src/hashgraph"
 )
 
 type AppProxy interface {

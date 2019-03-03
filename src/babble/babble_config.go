@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/mosaicnetworks/babble/src/node"
-	"github.com/mosaicnetworks/babble/src/proxy"
+	"github.com/AndrewDonelson/babble/src/node"
+	"github.com/AndrewDonelson/babble/src/proxy"
 	"github.com/sirupsen/logrus"
 )
 

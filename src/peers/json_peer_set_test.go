@@ -10,7 +10,7 @@ import (
 
 	"reflect"
 
-	scrypto "github.com/mosaicnetworks/babble/src/crypto"
+	scrypto "github.com/AndrewDonelson/babble/src/crypto"
 )
 
 func TestJSONPeerSet(t *testing.T) {

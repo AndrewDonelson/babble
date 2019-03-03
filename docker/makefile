@@ -9,7 +9,7 @@ demo: babble-image dummy-image watcher-image
 
 babble-image:
 	CGO_ENABLED=0 go build \
-		--ldflags "-X github.com/mosaicnetworks/babble/src/version.GitCommit=`git rev-parse HEAD`" \
+		--ldflags "-X github.com/AndrewDonelson/babble/src/version.GitCommit=`git rev-parse HEAD`" \
 		-o babble/babble ../cmd/babble/
 	docker build --no-cache=true -t mosaicnetworks/babble:$(BABBLE_VERSION)  -t mosaicnetworks/babble:latest babble/
 

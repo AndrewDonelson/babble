@@ -5,12 +5,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mosaicnetworks/babble/src/common"
-	"github.com/mosaicnetworks/babble/src/hashgraph"
-	"github.com/mosaicnetworks/babble/src/peers"
-	"github.com/mosaicnetworks/babble/src/proxy"
-	aproxy "github.com/mosaicnetworks/babble/src/proxy/socket/app"
-	bproxy "github.com/mosaicnetworks/babble/src/proxy/socket/babble"
+	"github.com/AndrewDonelson/babble/src/common"
+	"github.com/AndrewDonelson/babble/src/hashgraph"
+	"github.com/AndrewDonelson/babble/src/peers"
+	"github.com/AndrewDonelson/babble/src/proxy"
+	aproxy "github.com/AndrewDonelson/babble/src/proxy/socket/app"
+	bproxy "github.com/AndrewDonelson/babble/src/proxy/socket/babble"
 	"github.com/sirupsen/logrus"
 )
 

@@ -19,7 +19,7 @@ happening behind the scenes.
 Make sure you have `Docker <https://docker.com>`__ installed.  
 
 The demo will pull Docker images from our `official public Docker registry 
-<https://hub.docker.com/u/mosaicnetworks/>`__ 
+<https://hub.docker.com/u/AndrewDonelson/>`__ 
 
 ::
 

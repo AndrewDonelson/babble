@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/mosaicnetworks/babble/src/crypto"
-	"github.com/mosaicnetworks/babble/src/peers"
+	"github.com/AndrewDonelson/babble/src/crypto"
+	"github.com/AndrewDonelson/babble/src/peers"
 )
 
 func TestSignBlock(t *testing.T) {

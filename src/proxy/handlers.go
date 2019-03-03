@@ -1,6 +1,6 @@
 package proxy
 
-import "github.com/mosaicnetworks/babble/src/hashgraph"
+import "github.com/AndrewDonelson/babble/src/hashgraph"
 
 /*
 These types are exported and need to be implemented and used by the calling

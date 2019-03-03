@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 
-	"github.com/mosaicnetworks/babble/src/common"
+	"github.com/AndrewDonelson/babble/src/common"
 )
 
 type Peer struct {

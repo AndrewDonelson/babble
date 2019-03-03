@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mosaicnetworks/babble/src/common"
-	"github.com/mosaicnetworks/babble/src/crypto"
-	"github.com/mosaicnetworks/babble/src/peers"
+	"github.com/AndrewDonelson/babble/src/common"
+	"github.com/AndrewDonelson/babble/src/crypto"
+	"github.com/AndrewDonelson/babble/src/peers"
 	"github.com/sirupsen/logrus"
 )
 

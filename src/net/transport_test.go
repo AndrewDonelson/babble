@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mosaicnetworks/babble/src/common"
-	"github.com/mosaicnetworks/babble/src/hashgraph"
-	"github.com/mosaicnetworks/babble/src/peers"
+	"github.com/AndrewDonelson/babble/src/common"
+	"github.com/AndrewDonelson/babble/src/hashgraph"
+	"github.com/AndrewDonelson/babble/src/peers"
 )
 
 const (

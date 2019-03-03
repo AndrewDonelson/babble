@@ -3,8 +3,8 @@ package app
 import (
 	"time"
 
-	"github.com/mosaicnetworks/babble/src/hashgraph"
-	"github.com/mosaicnetworks/babble/src/proxy"
+	"github.com/AndrewDonelson/babble/src/hashgraph"
+	"github.com/AndrewDonelson/babble/src/proxy"
 	"github.com/sirupsen/logrus"
 )
 

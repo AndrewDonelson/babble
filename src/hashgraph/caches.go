@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strconv"
 
-	cm "github.com/mosaicnetworks/babble/src/common"
-	"github.com/mosaicnetworks/babble/src/peers"
+	cm "github.com/AndrewDonelson/babble/src/common"
+	"github.com/AndrewDonelson/babble/src/peers"
 )
 
 type Key struct {

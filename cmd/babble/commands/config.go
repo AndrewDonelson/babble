@@ -1,6 +1,6 @@
 package commands
 
-import "github.com/mosaicnetworks/babble/src/babble"
+import "github.com/AndrewDonelson/babble/src/babble"
 
 //CLIConfig contains configuration for the Run command
 type CLIConfig struct {

@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/dgraph-io/badger"
-	cm "github.com/mosaicnetworks/babble/src/common"
-	"github.com/mosaicnetworks/babble/src/peers"
+	cm "github.com/AndrewDonelson/babble/src/common"
+	"github.com/AndrewDonelson/babble/src/peers"
 )
 
 const (

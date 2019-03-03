@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mosaicnetworks/babble/src/proxy"
+	"github.com/AndrewDonelson/babble/src/proxy"
 	"github.com/sirupsen/logrus"
 )
 

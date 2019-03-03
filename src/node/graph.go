@@ -1,7 +1,7 @@
 package node
 
 import (
-	hg "github.com/mosaicnetworks/babble/src/hashgraph"
+	hg "github.com/AndrewDonelson/babble/src/hashgraph"
 )
 
 type Infos struct {

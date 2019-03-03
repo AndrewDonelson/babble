@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	hg "github.com/mosaicnetworks/babble/src/hashgraph"
-	"github.com/mosaicnetworks/babble/src/net"
+	hg "github.com/AndrewDonelson/babble/src/hashgraph"
+	"github.com/AndrewDonelson/babble/src/net"
 	"github.com/sirupsen/logrus"
 )
 

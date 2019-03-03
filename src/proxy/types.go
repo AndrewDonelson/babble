@@ -1,6 +1,6 @@
 package proxy
 
-import "github.com/mosaicnetworks/babble/src/hashgraph"
+import "github.com/AndrewDonelson/babble/src/hashgraph"
 
 type CommitResponse struct {
 	StateHash []byte

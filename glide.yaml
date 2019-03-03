@@ -1,4 +1,4 @@
-package: github.com/mosaicnetworks/babble
+package: github.com/AndrewDonelson/babble
 import:
 - package: github.com/dgraph-io/badger
   version: v1.5.3

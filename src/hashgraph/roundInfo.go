@@ -3,7 +3,7 @@ package hashgraph
 import (
 	"bytes"
 
-	"github.com/mosaicnetworks/babble/src/peers"
+	"github.com/AndrewDonelson/babble/src/peers"
 	"github.com/ugorji/go/codec"
 )
 

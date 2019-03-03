@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/mosaicnetworks/babble/src/crypto"
+	"github.com/AndrewDonelson/babble/src/crypto"
 )
 
 //PeerSet is a set of Peers forming a consensus network

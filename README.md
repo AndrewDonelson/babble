@@ -1,7 +1,7 @@
 # BABBLE
 ## BFT Consensus platform for distributed applications.
 
-[![CircleCI](https://circleci.com/gh/mosaicnetworks/babble.svg?style=svg)](https://circleci.com/gh/mosaicnetworks/babble)
+[![CircleCI](https://circleci.com/gh/AndrewDonelson/babble.svg?style=svg)](https://circleci.com/gh/AndrewDonelson/babble)
 
 Babble allows many computers to behave as one. It uses Peer to Peer (P2P) 
 networking and a consensus algorithm to guarantee that multiple connected 
@@ -153,13 +153,13 @@ CLI tool for managing Go code. Go is very opinionated and will require you to
 go code will reside.
 
 ### Babble and dependencies
-Clone the [repository](https://github.com/mosaicnetworks/babble) in the appropriate 
+Clone the [repository](https://github.com/AndrewDonelson/babble) in the appropriate 
 GOPATH subdirectory:
 
 ```bash
-$ mkdir -p $GOPATH/src/github.com/mosaicnetworks/
-$ cd $GOPATH/src/github.com/mosaicnetworks
-[...]/mosaicnetworks$ git clone https://github.com/mosaicnetworks/babble.git
+$ mkdir -p $GOPATH/src/github.com/AndrewDonelson/
+$ cd $GOPATH/src/github.com/andrewDonelson
+[...]/andrewDonelson$ git clone https://github.com/AndrewDonelson/babble.git
 ```
 Babble uses [Glide](http://github.com/Masterminds/glide) to manage dependencies.
 
@@ -189,26 +189,26 @@ Babble has extensive unit-testing. Use the Go tool to run tests:
 
 If everything goes well, it should output something along these lines:
 ```
-?       github.com/mosaicnetworks/babble/src/babble     [no test files]
-ok      github.com/mosaicnetworks/babble/src/common     0.015s
-ok      github.com/mosaicnetworks/babble/src/crypto     0.122s
-ok      github.com/mosaicnetworks/babble/src/hashgraph  10.270s
-?       github.com/mosaicnetworks/babble/src/mobile     [no test files]
-ok      github.com/mosaicnetworks/babble/src/net        0.012s
-ok      github.com/mosaicnetworks/babble/src/node       19.171s
-ok      github.com/mosaicnetworks/babble/src/peers      0.038s
-?       github.com/mosaicnetworks/babble/src/proxy      [no test files]
-ok      github.com/mosaicnetworks/babble/src/proxy/dummy        0.013s
-ok      github.com/mosaicnetworks/babble/src/proxy/inmem        0.037s
-ok      github.com/mosaicnetworks/babble/src/proxy/socket       0.009s
-?       github.com/mosaicnetworks/babble/src/proxy/socket/app   [no test files]
-?       github.com/mosaicnetworks/babble/src/proxy/socket/babble        [no test files]
-?       github.com/mosaicnetworks/babble/src/service    [no test files]
-?       github.com/mosaicnetworks/babble/src/version    [no test files]
-?       github.com/mosaicnetworks/babble/cmd/babble     [no test files]
-?       github.com/mosaicnetworks/babble/cmd/babble/commands    [no test files]
-?       github.com/mosaicnetworks/babble/cmd/dummy      [no test files]
-?       github.com/mosaicnetworks/babble/cmd/dummy/commands     [no test files]
+?       github.com/AndrewDonelson/babble/src/babble     [no test files]
+ok      github.com/AndrewDonelson/babble/src/common     0.015s
+ok      github.com/AndrewDonelson/babble/src/crypto     0.122s
+ok      github.com/AndrewDonelson/babble/src/hashgraph  10.270s
+?       github.com/AndrewDonelson/babble/src/mobile     [no test files]
+ok      github.com/AndrewDonelson/babble/src/net        0.012s
+ok      github.com/AndrewDonelson/babble/src/node       19.171s
+ok      github.com/AndrewDonelson/babble/src/peers      0.038s
+?       github.com/AndrewDonelson/babble/src/proxy      [no test files]
+ok      github.com/AndrewDonelson/babble/src/proxy/dummy        0.013s
+ok      github.com/AndrewDonelson/babble/src/proxy/inmem        0.037s
+ok      github.com/AndrewDonelson/babble/src/proxy/socket       0.009s
+?       github.com/AndrewDonelson/babble/src/proxy/socket/app   [no test files]
+?       github.com/AndrewDonelson/babble/src/proxy/socket/babble        [no test files]
+?       github.com/AndrewDonelson/babble/src/service    [no test files]
+?       github.com/AndrewDonelson/babble/src/version    [no test files]
+?       github.com/AndrewDonelson/babble/cmd/babble     [no test files]
+?       github.com/AndrewDonelson/babble/cmd/babble/commands    [no test files]
+?       github.com/AndrewDonelson/babble/cmd/dummy      [no test files]
+?       github.com/AndrewDonelson/babble/cmd/dummy/commands     [no test files]
 
 ```
 

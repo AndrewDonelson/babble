@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/mosaicnetworks/babble/src/common"
-	"github.com/mosaicnetworks/babble/src/crypto"
-	hg "github.com/mosaicnetworks/babble/src/hashgraph"
-	"github.com/mosaicnetworks/babble/src/peers"
-	"github.com/mosaicnetworks/babble/src/proxy"
+	"github.com/AndrewDonelson/babble/src/common"
+	"github.com/AndrewDonelson/babble/src/crypto"
+	hg "github.com/AndrewDonelson/babble/src/hashgraph"
+	"github.com/AndrewDonelson/babble/src/peers"
+	"github.com/AndrewDonelson/babble/src/proxy"
 )
 
 func initCores(n int, t *testing.T) ([]*Core, map[uint32]*ecdsa.PrivateKey, map[string]string) {

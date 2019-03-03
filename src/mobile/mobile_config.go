@@ -3,7 +3,7 @@ package mobile
 import (
 	"time"
 
-	"github.com/mosaicnetworks/babble/src/babble"
+	"github.com/AndrewDonelson/babble/src/babble"
 )
 
 type MobileConfig struct {
